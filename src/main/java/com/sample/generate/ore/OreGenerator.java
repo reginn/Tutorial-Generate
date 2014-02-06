@@ -1,8 +1,7 @@
 package com.sample.generate.ore;
 
-import java.util.Random;
-
-import net.minecraft.block.Block;
+import cpw.mods.fml.common.IWorldGenerator;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.WorldProviderHell;
@@ -10,26 +9,27 @@ import net.minecraft.world.WorldProviderSurface;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 
-import cpw.mods.fml.common.IWorldGenerator;
+import java.util.Random;
 
 /*
  * IWorldGeneratorインタフェースを実装する.
  */
-public class OreGenerator implements IWorldGenerator {
-
+public class OreGenerator implements IWorldGenerator
+{
 	/*
 	 * IWorldGeneratorでオーバーライドするメソッド.
 	 * このメソッドの中で生成処理を行う.
 	 * 引数は(Random, chunkのX座標, chunkのZ座標, world, 現在のChunkのChunkProvider, これから生成するChunkのChunkProvider
 	 */
 	@Override
-	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
-
+	public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
+	{
 		/*
 		 * chunkXとchunkZはチャンクの座標なので, 4bit左シフト=16倍してブロックの座標に変換する.
 		 * worldProviderをチェックして, 地上, ネザー, エンドにそれぞれ同じ鉱石を生成する.
 		 */
-		if (world.provider instanceof WorldProviderSurface) {
+		if (world.provider instanceof WorldProviderSurface)
+		{
 			this.generateOre(world, random, chunkX << 4, chunkZ << 4);
 		}
 
@@ -37,7 +37,8 @@ public class OreGenerator implements IWorldGenerator {
 		 * ネザーかどうかの判定
 		 * if (world.provider.dimensionId == -1)でもよい
 		 */
-		if (world.provider instanceof WorldProviderHell) {
+		if (world.provider instanceof WorldProviderHell)
+		{
 			this.generateOreHell(world, random, chunkX << 4, chunkZ << 4);
 		}
 
@@ -45,7 +46,8 @@ public class OreGenerator implements IWorldGenerator {
 		 * エンドかどうかの判定
 		 * if (world.provider.dimensionId == 1)でもよい
 		 */
-		if (world.provider instanceof WorldProviderEnd) {
+		if (world.provider instanceof WorldProviderEnd)
+		{
 			this.generateOreEnd(world, random, chunkX << 4, chunkZ << 4);
 		}
 
@@ -61,13 +63,13 @@ public class OreGenerator implements IWorldGenerator {
 	/*
 	 * 鉱石を生成するメソッド
 	 */
-	private void generateOre(World world, Random random, int x, int z) {
-
+	private void generateOre(World world, Random random, int x, int z)
+	{
 		/*
 		 * 1Chunkでどれだけ生成するか, 今回は30回試行する.
 		 */
-		for (int i = 0; i < 30; ++i) {
-
+		for (int i = 0; i < 30; ++i)
+		{
 			/*
 			 * 鉱石を生成する座標を決める.
 			 * x, zは+0~+15の間, yは10~59(10+49)の間にランダムで決まる.
@@ -82,14 +84,14 @@ public class OreGenerator implements IWorldGenerator {
 			 * generateの引数は(world, random, x, y, z).
 			 * 通常は石ブロックが鉱石と置換される.
 			 */
-			(new WorldGenMinable(SampleGenerateOreCore.blockOre.blockID, 4)).generate(world, random, genX, genY, genZ);
+			(new WorldGenMinable(SampleGenerateOreCore.blockOre, 4)).generate(world, random, genX, genY, genZ);
 		}
 	}
 
-
-	private void generateOreHell(World world, Random random, int x, int z) {
-
-		for (int i = 0; i < 30; ++i) {
+	private void generateOreHell(World world, Random random, int x, int z)
+	{
+		for (int i = 0; i < 30; ++i)
+		{
 			int genX =  x + random.nextInt(16);
 			int genY = 10 + random.nextInt(50);
 			int genZ =  z + random.nextInt(16);
@@ -100,13 +102,14 @@ public class OreGenerator implements IWorldGenerator {
 			 * generateの引数は(world, random, x, y, z).
 			 * Netherなので石ブロックではなくネザーラックと置換するようにする.
 			 */
-			(new WorldGenMinable(SampleGenerateOreCore.blockOre.blockID, 0, 4, Block.netherrack.blockID)).generate(world, random, genX, genY, genZ);
+			(new WorldGenMinable(SampleGenerateOreCore.blockOre, 0, 4, Blocks.netherrack)).generate(world, random, genX, genY, genZ);
 		}
 	}
 
-	private void generateOreEnd(World world, Random random, int x, int z) {
-
-		for (int i = 0; i < 30; ++i) {
+	private void generateOreEnd(World world, Random random, int x, int z)
+	{
+		for (int i = 0; i < 30; ++i)
+		{
 			int genX =  x + random.nextInt(16);
 			int genY = 10 + random.nextInt(50);
 			int genZ =  z + random.nextInt(16);
@@ -117,11 +120,7 @@ public class OreGenerator implements IWorldGenerator {
 			 * generateの引数は(world, random, x, y, z).
 			 * Endなので石ブロックではなくエンドストーンと置換するようにする.
 			 */
-			(new WorldGenMinable(SampleGenerateOreCore.blockOre.blockID, 0, 4, Block.whiteStone.blockID)).generate(world, random, genX, genY, genZ);
+			(new WorldGenMinable(SampleGenerateOreCore.blockOre, 0, 4, Blocks.end_stone)).generate(world, random, genX, genY, genZ);
 		}
-
 	}
-
-
-
 }
