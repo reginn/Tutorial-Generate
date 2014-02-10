@@ -23,7 +23,11 @@ public class SampleGenerateOreCore
 				.setBlockTextureName("ore:ore");
 
 		GameRegistry.registerBlock(blockOre, "blockOre");
+	}
 
+	@Mod.EventHandler
+	public void init(FMLInitializationEvent event)
+	{
 		/*
 		 * IWorldGeneratorを実装したクラスのインスタンスを登録するメソッド.
 		 * このメソッドに登録することでチャンク生成時に鉱石が追加生成されるようになる.
